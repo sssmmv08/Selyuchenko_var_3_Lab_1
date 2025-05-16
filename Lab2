@@ -1,0 +1,11 @@
+# Введення списку чисел
+numbers = list(map(float, input("Введіть числа через пробіл: ").split()))
+
+# Обчислення середнього арифметичного
+average = sum(numbers) / len(numbers)
+
+# Виведення елементів, менших за середнє
+print("Елементи, менші за середнє арифметичне:")
+for num in numbers:
+    if num < average:
+        print(num)
