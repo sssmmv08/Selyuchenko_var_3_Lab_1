@@ -1,0 +1,113 @@
+import random
+import copy
+
+class GameOfLife:
+    def __init__(self):
+        self.rows = 10
+        self.cols = 10
+        self.grid = [['_' for _ in range(self.cols)] for _ in range(self.rows)]
+        self.history = []
+        self.step_counter = 0
+
+    def display(self):
+        print("   " + " ".join(str(i) for i in range(self.cols)))
+        for i in range(self.rows):
+            print(chr(65 + i), " ".join(self.grid[i]))
+        print(f"Крок: {self.step_counter}\n")
+
+    def reset(self):
+        self.grid = [['_' for _ in range(self.cols)] for _ in range(self.rows)]
+        self.history = []
+        self.step_counter = 0
+
+    def clear(self):
+        self.grid = [['_' for _ in range(self.cols)] for _ in range(self.rows)]
+
+    def set_random(self, n):
+        if n < 2 or n >= 100:
+            print("⚠️ N має бути від 2 до 99 включно.")
+            return
+        self.reset()
+        cells = set()
+        while len(cells) < n:
+            r = random.randint(0, self.rows - 1)
+            c = random.randint(0, self.cols - 1)
+            cells.add((r, c))
+        for r, c in cells:
+            self.grid[r][c] = '*'
+
+    def count_neighbors(self, r, c):
+        count = 0
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr == 0 and dc == 0:
+                    continue
+                nr = (r + dr) % self.rows
+                nc = (c + dc) % self.cols
+                if self.grid[nr][nc] == '*':
+                    count += 1
+        return count
+
+    def next_step(self):
+        new_grid = copy.deepcopy(self.grid)
+        for r in range(self.rows):
+            for c in range(self.cols):
+                neighbors = self.count_neighbors(r, c)
+                if self.grid[r][c] == '*' and (neighbors < 2 or neighbors > 3):
+                    new_grid[r][c] = '_'
+                elif self.grid[r][c] == '_' and neighbors == 3:
+                    new_grid[r][c] = '*'
+        self.history.append(copy.deepcopy(self.grid))
+        self.grid = new_grid
+        self.step_counter += 1
+
+    def step(self, n=1):
+        for _ in range(n):
+            self.next_step()
+
+    def back(self, n=1):
+        for _ in range(min(n, len(self.history))):
+            self.grid = self.history.pop()
+            self.step_counter -= 1
+
+
+# --- Текстовий інтерфейс ---
+
+if __name__ == "__main__":
+    game = GameOfLife()
+
+    while True:
+        cmd = input("Введіть команду (reset, set N, clear, step N, back N, exit): ").strip().lower()
+        if cmd == "exit":
+            break
+        elif cmd == "reset":
+            game.reset()
+        elif cmd.startswith("set"):
+            try:
+                parts = cmd.split()
+                if len(parts) != 2:
+                    raise ValueError
+                n = int(parts[1])
+                game.set_random(n)
+            except:
+                print("❌ Невірна команда! Використовуйте формат: set N (наприклад: set 10)")
+        elif cmd == "clear":
+            game.clear()
+        elif cmd.startswith("step"):
+            try:
+                parts = cmd.split()
+                n = int(parts[1]) if len(parts) > 1 else 1
+                game.step(n)
+            except:
+                print("❌ Невірна команда! Використовуйте формат: step N (наприклад: step 3)")
+        elif cmd.startswith("back"):
+            try:
+                parts = cmd.split()
+                n = int(parts[1]) if len(parts) > 1 else 1
+                game.back(n)
+            except:
+                print("❌ Невірна команда! Використовуйте формат: back N (наприклад: back 2)")
+        else:
+            print("❓ Невідома команда. Спробуйте ще раз.")
+
+        game.display()
