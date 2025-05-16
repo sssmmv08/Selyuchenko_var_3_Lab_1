@@ -1,0 +1,16 @@
+import math
+
+def lateral_surface_area(V, h):
+    a = math.sqrt((3 * V) / h)
+    l = math.sqrt((a / 2)**2 + h**2)
+    S = 2 * a * l
+    return round(S, 3)
+
+# Введення значень користувачем
+V = float(input("Введіть об'єм V: "))
+h = float(input("Введіть висоту h: "))
+
+# Розрахунок та вивід результату
+result = lateral_surface_area(V, h)
+print(f"Площа бічної поверхні: {result}")
+
