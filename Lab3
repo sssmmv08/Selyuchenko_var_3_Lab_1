@@ -1,0 +1,14 @@
+def is_natural(n):
+    if n == 1:
+        return True
+    elif n < 1 or n != int(n):
+        return False
+    else:
+        return is_natural(n - 1)
+
+# Тестування
+num = float(input("Введіть число: "))
+if is_natural(num):
+    print("Це натуральне число.")
+else:
+    print("Це не натуральне число.")
