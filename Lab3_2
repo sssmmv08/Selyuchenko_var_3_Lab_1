@@ -1,0 +1,22 @@
+def find_substring(text, sub):
+    text_len = len(text)
+    sub_len = len(sub)
+
+    if sub_len == 0:
+        return 0  # Порожній підрядок вважається знайденим на початку
+
+    for i in range(text_len - sub_len + 1):
+        match = True
+        for j in range(sub_len):
+            if text[i + j] != sub[j]:
+                match = False
+                break
+        if match:
+            return i
+
+    return -1  # Якщо не знайдено
+# Тестові приклади
+print(find_substring("Привіт, світ!", "св"))    # Очікується: 8
+print(find_substring("Hello, world", "wor"))   # Очікується: 7
+print(find_substring("abcdef", "xyz"))         # Очікується: -1
+print(find_substring("Python", ""))            # Очікується: 0
